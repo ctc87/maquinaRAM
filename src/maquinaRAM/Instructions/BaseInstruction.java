@@ -1,9 +1,34 @@
+package maquinaRAM.Instructions;
+
 
 /**
  * @author Carlos Troyano Carmona
- * This class represents a basic instruction. Its a abstract class.
  *
  */
-public abstract class Instruction {
+public class BaseInstruction {
+	String InstructionName;	
+	
+	public BaseInstruction(String InstructionName) {
+		this.InstructionName = InstructionName;
+	}
+	
+	@Override
+	public String toString() {
+		return "[ Instruction name: " + InstructionName + " ] " ;
+	}
+	
+	/**
+	 * @return the instructionName
+	 */
+	public String getInstructionName() {
+		return InstructionName;
+	}
+	/**
+	 * @param instructionName the instructionName to set
+	 */
+	public void setInstructionName(String instructionName) {
+		InstructionName = instructionName;
+	}
+
 
 }

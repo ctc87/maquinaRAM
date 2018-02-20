@@ -30,10 +30,13 @@ public class Tape {
 	}
 	
 	public String toString() {
-		String str = "tape:";
-		for (int i = 0; i < tape.size(); i++) {
-			str += tape.get(i) + ", ";
+		String str = "Tape:";
+		int i;
+		for (i = 0; i < tape.size(); i++) {
+			String quote =  i == (tape.size() - 1) ? "" : ",";
+			str += tape.get(i) + quote;
 		}
+		if(i == 0) str += "Void"; 
 		return str;
 	}
 }

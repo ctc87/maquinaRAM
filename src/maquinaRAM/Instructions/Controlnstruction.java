@@ -9,7 +9,7 @@ public class Controlnstruction extends BaseInstruction {
 	
 	@Override
 	public String toString() {
-		return super.toString() + " ( Tag: " + tag + " )"; 
+		return super.toString() + " " + tag;
 	}
 
 	String tag;

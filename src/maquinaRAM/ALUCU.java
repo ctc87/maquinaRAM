@@ -1,10 +1,11 @@
 package maquinaRAM;
 
 
+import java.io.IOException;
+
 import maquinaRAM.Instructions.BaseInstruction;
 import maquinaRAM.Instructions.Controlnstruction;
 import maquinaRAM.Instructions.Instruction;
-import maquinaRAM.exceptions.SintaxError;
 import maquinaRAM.operands.Operand;
 
 /**
@@ -96,13 +97,20 @@ public class ALUCU {
 	
 	/**
 	 * The execution of the RAM program.
+	 * @throws Ilegalnstruction 
 	 */
-	public void execution()  {
+	public void execution() {
 		int i = 0;  
 		while(!halt) {
 			readInstruction(programMemoryAcces.getMemory().get(IP).getData());
 			if(debug) {
-				System.out.println(printStep()); 
+				System.out.println(printStep(i));
+				try {
+					System.in.read();
+				} catch (IOException e) {
+
+					e.printStackTrace();
+				}
 			}
 			i++;
 		}
@@ -112,14 +120,23 @@ public class ALUCU {
 		
 	}
 	
-	private String printStep() {
+	private String printStep(int i) {
 		String str = "";
 		String n = "\n";
 		str += addSeparationLine();
 		str += "IP: " + IP + n;
 		str += addSeparationLine();
 		str += "Data " + dataMemoryAcces.toString();
-		return str;
+		str += addSeparationLine();
+		str += "Program " + programMemoryAcces.toString();
+		str += addSeparationLine();
+		str += "Input " + inputTapeAcces.toString() + n;
+		str += addSeparationLine();
+		str += "Output " + outputTapeAcces.toString() + n;
+		str += addSeparationLine();
+		str += "Instructions executed: " + (i + 1)
+				;
+		return str + n + n;
 		
 	}
 	
@@ -130,8 +147,9 @@ public class ALUCU {
 	/**
 	 * Read instruction and execute the code of teh machine for the instruction. 
 	 * @param instruction
+	 * @throws Ilegalnstruction 
 	 */
-	public void readInstruction(BaseInstruction instruction) {
+	public void readInstruction(BaseInstruction instruction)  {
 		String instructionName = instruction.getInstructionName().toLowerCase();
 		if(instruction instanceof Instruction) {
 			Instruction instructionN = (Instruction)(instruction);
@@ -172,8 +190,6 @@ public class ALUCU {
 				halt();
 			break;
 
-			default:
-				break;
 			}
 			IP++;
 

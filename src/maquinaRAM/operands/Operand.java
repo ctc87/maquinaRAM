@@ -12,18 +12,17 @@ public class Operand {
 	
 	@Override
 	public String toString() {
-		
-		return " { operand: " + oper + " ||  class: " + printClass(operandClass) + " }";
+		return  printClass(operandClass) + oper;
 	}
 	
 	private String printClass(String operand){
 		String str = "";
 		if(operand.equals("direct"))
-			str = "Direct addressing";
+			str = "";
 		if(operand.equals("indirect"))
-			str = "IN-Direct addressing";
+			str = "*";
 		if(operand.equals("constant"))
-			str = "Constant addressing";
+			str = "=";
 		return str;
 	}
 	

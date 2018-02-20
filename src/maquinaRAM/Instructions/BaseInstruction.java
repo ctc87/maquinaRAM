@@ -14,7 +14,7 @@ public class BaseInstruction {
 	
 	@Override
 	public String toString() {
-		return "[ Instruction name: " + InstructionName + " ] " ;
+		return InstructionName + " " ;
 	}
 	
 	/**

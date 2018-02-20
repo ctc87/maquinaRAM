@@ -13,7 +13,7 @@ public class Register<T> {
 	public String toString() {
 		String str, dataStr;
 		if(Registerlabel != null) {
-			str = Registerlabel.isEmpty() ?  ""  : " (LABEL: " + Registerlabel + ")";
+			str = Registerlabel.isEmpty() ?  ""  : Registerlabel + ":";
 		} else {
 			str = "null";
 		}

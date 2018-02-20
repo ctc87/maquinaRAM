@@ -23,8 +23,9 @@ public class RAM_Machine {
 	Tape outputTape;
 	HashMap<String, String> files;
 	ALUCU alucu;
+	ArrayList<String> legalInstructions;
 	boolean debug;  
-
+	
 	public static void main(String[] args) throws Exception {
 		HashMap<String, String> files = new HashMap<String, String>();
 		if(args.length < 4) {
@@ -45,18 +46,20 @@ public class RAM_Machine {
 		files.put("output", args[2]);
 		RAM_Machine ramM;
 		boolean debug = args[3].equals("1");
-		System.out.println(debug);
+		
 		try {
 			ramM = new RAM_Machine(files, debug);
-			ramM.alucu.execution();
 			ramM.writeInputTape();
+			ramM.alucu.execution();
 		} catch (SintaxError e) {
 			e.printStackTrace();
 		}
 		
+		
 	}
 
 	public RAM_Machine(HashMap<String, String> files, boolean debug) throws SintaxError {
+		createLegalInstructionArraylist();
 		this.files = files;
 		initializeTapes(files.get("input"));
 		int maxRegNumbers = 1;
@@ -70,6 +73,22 @@ public class RAM_Machine {
 		dataMemory = new Memory<Integer>(maxRegNumbers, 0);
 		alucu = new ALUCU(dataMemory, programMemory, inputTape, outputTape, debug);
 
+	}
+	
+	private void createLegalInstructionArraylist() {
+		legalInstructions = new ArrayList<String>();
+		legalInstructions.add("load");
+		legalInstructions.add("store");
+		legalInstructions.add("add");
+		legalInstructions.add("sub");
+		legalInstructions.add("mul");
+		legalInstructions.add("div");
+		legalInstructions.add("read");
+		legalInstructions.add("write");
+		legalInstructions.add("jump");
+		legalInstructions.add("jzero");
+		legalInstructions.add("jgtz");
+		legalInstructions.add("halt");
 	}
 
 	public int initializeProgram(String programFileName) throws FileNotFoundException, IOException, SintaxError {
@@ -98,6 +117,10 @@ public class RAM_Machine {
 						actualLine = actualLine.split(":")[1].trim();
 					}
 					if (itsControlInstruction(actualLine)) {
+						String insName = actualLine.split("\\p{Blank}+")[0];
+						if(!itsLegalInstruction(insName)) {
+							throw new SintaxError((i+1), "Uknown instruction " + insName , files.get("program"));
+						}
 						ins = new Controlnstruction(actualLine.split("\\p{Blank}+")[0], actualLine.split("\\p{Blank}+")[1]);
 					} else {
 						String operandClass = "";
@@ -126,8 +149,12 @@ public class RAM_Machine {
 						if (actualLine.equals("halt")) {
 							operand = "-1";
 						}
+						String insName = actualLine.split("\\p{Blank}+")[0];
 						Operand op = new Operand(operandClass, Integer.parseInt(operand));
-						ins = new Instruction(actualLine.split("\\p{Blank}+")[0], op);
+						if(!itsLegalInstruction(insName)) {
+							throw new SintaxError((i+1), "Uknown instruction " + insName , files.get("program"));
+						}
+						ins = new Instruction(insName, op);
 						boolean sintaxStoreRead = ins.getInstructionName().toLowerCase().equals("store") || ins.getInstructionName().toLowerCase().equals("read");
 						boolean sintaxWriteRead = ins.getInstructionName().toLowerCase().equals("write") || ins.getInstructionName().toLowerCase().equals("read");
 		
@@ -145,6 +172,10 @@ public class RAM_Machine {
 			}
 		}
 		return maxRegNumber;
+	}
+	
+	private boolean itsLegalInstruction(String ins) {
+		return legalInstructions.contains(ins.toLowerCase());
 	}
 
 	private boolean itsConstantOp(String str) {

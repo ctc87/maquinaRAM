@@ -20,6 +20,10 @@ public class Operand {
 		String str = "";
 		if(operand.equals("direct"))
 			str = "Direct addressing";
+		if(operand.equals("indirect"))
+			str = "IN-Direct addressing";
+		if(operand.equals("constant"))
+			str = "Constant addressing";
 		return str;
 	}
 	

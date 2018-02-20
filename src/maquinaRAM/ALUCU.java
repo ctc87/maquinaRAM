@@ -82,6 +82,7 @@ public class ALUCU {
 	
 	public void execution()  {
 		System.out.println(programMemoryAcces.toString());
+		int i =0;
 		while(!halt) {
 			System.out.println("Leyendo en R:" + IP);
 			readInstruction(programMemoryAcces.getMemory().get(IP).getData());
@@ -166,7 +167,7 @@ public class ALUCU {
 	public int resolveOperand(Operand op) {
 		int value = -10;
 		System.out.println("Resolvidneod oprando " + op.getOperandClass());
-		if(op.getClass().equals("constant")) {
+		if(op.getOperandClass().equals("constant")) {
 			value =  op.getOper();
 		} else if(op.getOperandClass().equals("direct")) {
 			value =  directAccesRegister(op.getOper()).getData();
@@ -191,11 +192,25 @@ public class ALUCU {
 	}
 	
 	public Register<Integer> directAccesRegister(int pos) {
+		System.out.println(dataMemoryAcces);
+		if(pos >= dataMemoryAcces.getMemory().size()) {
+			System.out.println("MAyor");
+			dataMemoryAcces.resize(pos);
+		}
 		return dataMemoryAcces.getMemory().get(pos);
 	}
 	
 	public Register<Integer> indirectAccesRegister(int pos) {
+		if(pos >= dataMemoryAcces.getMemory().size()) {
+			System.out.println("MAyor");
+			dataMemoryAcces.resize(pos);
+		}
 		int regDirection =  dataMemoryAcces.getMemory().get(pos).getData();
+		if(regDirection >= dataMemoryAcces.getMemory().size()) {
+			System.out.println("MAyor");
+			dataMemoryAcces.resize(regDirection);
+			
+		}
 		return dataMemoryAcces.getMemory().get(regDirection);
 	}
 	
@@ -217,6 +232,7 @@ public class ALUCU {
 	}
 	
 	public void mul(Operand op) {
+		System.out.println(R0.getData() +"X"+ resolveOperand(op));
 		R0.setData(R0.getData() * resolveOperand(op));
 	}
 	

@@ -27,7 +27,7 @@ fin:		load =0
 carga:	load *2
 				jzero fin2
 
-				mult =3
+				mul =3
 				store *2
 				write *2
 

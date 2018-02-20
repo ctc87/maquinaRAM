@@ -67,5 +67,18 @@ public class Memory<T> {
 		str += "------------------------------------------";
 		return str;
 	}
+
+
+	public void resize(int pos) {
+		System.out.println("resize: memoria tamaño deseado " + pos );
+		System.out.println("memoria tamaño actual " + getMemory().size() );
+		for (int i = getMemory().size() - 1; i <= pos; i++) {
+			System.out.println("valor de la i en el resize " + i);
+			getMemory().add(new Register<T>(null, ""));
+		}
+		System.out.println("memoria tamaño actual despues del resize " + getMemory().size() );
+		System.out.println(toString());
+		
+	}
 	
 }

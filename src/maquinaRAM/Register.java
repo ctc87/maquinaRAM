@@ -11,8 +11,18 @@ public class Register<T> {
 	
 	@Override
 	public String toString() {
-		String str = Registerlabel.isEmpty() ?  ""  : " (LABEL: " + Registerlabel + ")";
-		return str + data.toString(); 
+		String str, dataStr;
+		if(Registerlabel != null) {
+			str = Registerlabel.isEmpty() ?  ""  : " (LABEL: " + Registerlabel + ")";
+		} else {
+			str = "null";
+		}
+		if(data != null) {
+			dataStr = data.toString(); 
+		} else {
+			dataStr = "null";
+		}
+		return str + dataStr; 
 	}
 
 	/**

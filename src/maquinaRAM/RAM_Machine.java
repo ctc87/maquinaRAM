@@ -179,15 +179,15 @@ public class RAM_Machine {
 	}
 
 	private boolean itsConstantOp(String str) {
-		return Pattern.matches("=[0-9]+", str);
+		return Pattern.matches("=[+-]?[0-9]+", str);
 	}
 
 	private boolean itsDirectOp(String str) {
-		return Pattern.matches("[0-9]+", str);
+		return Pattern.matches("[+-]?[0-9]+", str);
 	}
 
 	private boolean itsIndirectOp(String str) {
-		return Pattern.matches("\\*[0-9]+", str);
+		return Pattern.matches("\\*[+-]?[0-9]+", str);
 	}
 
 	private boolean isNotEmptyLine(String str) {

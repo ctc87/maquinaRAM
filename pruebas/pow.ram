@@ -1,6 +1,7 @@
 # Programa que lee dos datos de la cinta de entrada y calcula  
 # X^y donde X es el primer dato e y el segundo caundo termina
 # graba el resultado en la cinta de salida
+# si el exponente es negativo imprimira -911 en la cinta
 
 
 # leemos la base de la cinta y lo ponemos en R1 y en R3
@@ -15,13 +16,20 @@
 					load 2
 					
 # si es 0 saltamos a fin:
-					jzero fin	
+					jzero fin
+
+# si no es negativo seguimos al ejecucion en noNegativo
+					jgtz noNegativo
+
+# si es negativo saltamos a fin3
+					jump fin3	
 									
 
 
 # vamos a multiplicar base despues de restar 1
-				load 2
+noNegativo:				load 2
 				sub =1
+				jzero fin2
 				store 2
 
 multiplicarBase: 	load 1
@@ -42,7 +50,12 @@ restar1:		load 2
 
 # escribimos 1 en la cinta de salida
 fin:	write =1
-			jump fin3			 	
+			jump fin4			 	
 fin2:	write 3
-fin3:			halt
+			jump fin4
+
+fin3: write =-911
+			jump fin4
+
+fin4:			halt
   

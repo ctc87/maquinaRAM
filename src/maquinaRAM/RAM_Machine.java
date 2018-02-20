@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
@@ -21,23 +23,40 @@ public class RAM_Machine {
 	Tape outputTape;
 	HashMap<String, String> files;
 	ALUCU alucu;
+	boolean debug;  
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		HashMap<String, String> files = new HashMap<String, String>();
+		if(args.length < 4) {
+			throw new Exception(
+					"\nError the execution needs four param \nUsage: \n"
+					+ "ram_program.ram: file with the RAM program.\n"
+					+ "input_tape.in: file with the contents of the input tape.\n"
+					+ "output_tape.out: file with the contents of the output tape.\n"
+					+ "debug: If the value of this parameter is 1, a step simulation will be carried out\n"
+					+ "step by step, showing by console in each of them the content of the IP record,\n"
+					+ "of the data memory, the program memory, the input tapes\n"
+					+ "and exit, and the total number of instructions executed up to that moment. He\n"
+					+ "value 0 carries out the complete simulation. At the end of it, you should only\n"
+					+ "show by console the total number of instructions executed.");
+		}
 		files.put("program", args[0]);
 		files.put("input", args[1]);
 		files.put("output", args[2]);
 		RAM_Machine ramM;
+		boolean debug = args[3].equals("1");
+		System.out.println(debug);
 		try {
-			ramM = new RAM_Machine(files);
+			ramM = new RAM_Machine(files, debug);
 			ramM.alucu.execution();
+			ramM.writeInputTape();
 		} catch (SintaxError e) {
 			e.printStackTrace();
 		}
 		
 	}
 
-	public RAM_Machine(HashMap<String, String> files) throws SintaxError {
+	public RAM_Machine(HashMap<String, String> files, boolean debug) throws SintaxError {
 		this.files = files;
 		initializeTapes(files.get("input"));
 		int maxRegNumbers = 1;
@@ -49,7 +68,7 @@ public class RAM_Machine {
 			e.printStackTrace();
 		}
 		dataMemory = new Memory<Integer>(maxRegNumbers, 0);
-		alucu = new ALUCU(dataMemory, programMemory, inputTape, outputTape);
+		alucu = new ALUCU(dataMemory, programMemory, inputTape, outputTape, debug);
 
 	}
 
@@ -74,14 +93,11 @@ public class RAM_Machine {
 					String actualLine = programStringArray.get(i).trim();
 					String tagReg = "";
 					BaseInstruction ins = new BaseInstruction("");
-					System.out.println("linea trim: " + actualLine.trim());
 					if (itsTaggedRegister(actualLine)) {
 						tagReg = actualLine.split(":")[0];
-						System.out.println("et: " + tagReg );
 						actualLine = actualLine.split(":")[1].trim();
 					}
 					if (itsControlInstruction(actualLine)) {
-						System.out.println("CONSTROL!!!!!!!!!!");
 						ins = new Controlnstruction(actualLine.split("\\p{Blank}+")[0], actualLine.split("\\p{Blank}+")[1]);
 					} else {
 						String operandClass = "";
@@ -91,19 +107,14 @@ public class RAM_Machine {
 						} else {
 							operand = "0";
 						}
-						System.out.println("operand:" + operand);
 						if (itsConstantOp(operand)) {
 							operandClass = "constant";
-							System.out.println(operand.split("=")[1]);
 							operand = operand.split("=")[1];
 					
 						} else if (itsIndirectOp(operand)) {
 							operandClass = "indirect";
-							System.out.println(operand);
 							operand = operand.replaceAll("\\*", "*"); 
-							System.out.println(operand);
 							operand = operand.split("\\*")[1];
-							System.out.println(operand);
 							maxRegNumber = Integer.parseInt(operand) > maxRegNumber ? Integer.parseInt(operand) : maxRegNumber;
 						} else if(itsDirectOp(operand)){
 							operandClass = "direct";
@@ -115,7 +126,6 @@ public class RAM_Machine {
 						if (actualLine.equals("halt")) {
 							operand = "-1";
 						}
-						System.out.println("OPERAND:  " + operand);
 						Operand op = new Operand(operandClass, Integer.parseInt(operand));
 						ins = new Instruction(actualLine.split("\\p{Blank}+")[0], op);
 						boolean sintaxStoreRead = ins.getInstructionName().toLowerCase().equals("store") || ins.getInstructionName().toLowerCase().equals("read");
@@ -129,13 +139,11 @@ public class RAM_Machine {
 								throw new SintaxError((i+1), "Incorrect reg value, " + ins.getInstructionName() + " can' t operate in R0.", files.get("program"));
 						}
 					}
-					System.out.println(ins);
 					Register<BaseInstruction> reg = new Register<BaseInstruction>(ins, tagReg);
 					programMemory.getMemory().add(reg);
 				}
 			}
 		}
-		System.out.println(programMemory);
 		return maxRegNumber;
 	}
 
@@ -160,7 +168,6 @@ public class RAM_Machine {
 	}
 
 	private boolean itsTaggedRegister(String str) {
-		System.out.println("tiene etiqueta? " + str +  " " + (Pattern.matches("[a-z_A-Z]+:.*", str)));
 		return Pattern.matches("[a-z_A-Z]+[0-9]*:.*", str);
 	}
 
@@ -186,9 +193,26 @@ public class RAM_Machine {
 		while ((str = b.readLine()) != null) {
 			outputTape.add(Integer.parseInt(str));
 		}
-		System.out.println("input tape tostring  " + outputTape.toString() );
 		b.close();
 		return outputTape;
+	}
+	
+	public void writeInputTape() {
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(files.get("output"), "UTF-8");
+			for (int i = 0; i < outputTape.size(); i++) {
+				writer.println(outputTape.get());
+				
+			}
+			writer.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

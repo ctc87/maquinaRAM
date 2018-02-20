@@ -4,6 +4,7 @@ package maquinaRAM;
 import maquinaRAM.Instructions.BaseInstruction;
 import maquinaRAM.Instructions.Controlnstruction;
 import maquinaRAM.Instructions.Instruction;
+import maquinaRAM.exceptions.SintaxError;
 import maquinaRAM.operands.Operand;
 
 /**
@@ -13,6 +14,10 @@ import maquinaRAM.operands.Operand;
  * @version 1.0
  * @date 1 mar. 2017
  * @see System
+ */
+/**
+ * @author root
+ *
  */
 /**
  * @author root
@@ -56,18 +61,26 @@ public class ALUCU {
 	 */
 	boolean halt;
 	
+	
+	/**
+	 * The boolean value to debugging.
+	 */
+	boolean debug;
+	
 	/**
 	 * Constructor of the class instance the initial parameters.
 	 * @param dataMemory Read data memory.
 	 * @param programMemory Read program memory.
 	 * @param inputTape 
 	 * @param outputTape
+	 * @param debug 
 	 */
 	public ALUCU(
 			Memory<Integer> dataMemory, 
 			Memory<BaseInstruction> programMemory, 
 			Tape inputTape, 
-			Tape outputTape
+			Tape outputTape, 
+			boolean debug
 			) 
 	{
 		dataMemoryAcces = dataMemory;
@@ -77,29 +90,49 @@ public class ALUCU {
 		R0 = dataMemory.getMemory().get(0);
 		IP = 0;
 		halt = false;
+		this.debug = debug;
 		
 	}
 	
+	/**
+	 * The execution of the RAM program.
+	 */
 	public void execution()  {
-		System.out.println(programMemoryAcces.toString());
-		int i =0;
+		int i = 0;  
 		while(!halt) {
-			System.out.println("Leyendo en R:" + IP);
 			readInstruction(programMemoryAcces.getMemory().get(IP).getData());
-			System.out.println("tape out: " + outputTapeAcces);
+			if(debug) {
+				System.out.println(printStep()); 
+			}
+			i++;
 		}
+		if(!debug) {
+			System.out.println("Total instructions executed " + (i+1));
+		}
+		
 	}
 	
+	private String printStep() {
+		String str = "";
+		String n = "\n";
+		str += addSeparationLine();
+		str += "IP: " + IP + n;
+		str += addSeparationLine();
+		str += "Data " + dataMemoryAcces.toString();
+		return str;
+		
+	}
+	
+	private String addSeparationLine() {
+		return "==============================================\n";
+	}
+
 	/**
-	 * lEEMOS LA INSTRUCCION vamos a ver como la ejecuta
+	 * Read instruction and execute the code of teh machine for the instruction. 
 	 * @param instruction
 	 */
 	public void readInstruction(BaseInstruction instruction) {
 		String instructionName = instruction.getInstructionName().toLowerCase();
-		System.out.println("Nombre de la instruccion leida "  + instructionName );
-		/**
-		 * Es una instruccion base?
-		 */
 		if(instruction instanceof Instruction) {
 			Instruction instructionN = (Instruction)(instruction);
 			switch (instructionName) {
@@ -128,7 +161,6 @@ public class ALUCU {
 			break;
 
 			case "read":
-				System.out.println("EFECTIVAMENTE LEE READ");
 				read(instructionN.getOper());
 			break;
 
@@ -166,7 +198,6 @@ public class ALUCU {
 	
 	public int resolveOperand(Operand op) {
 		int value = -10;
-		System.out.println("Resolvidneod oprando " + op.getOperandClass());
 		if(op.getOperandClass().equals("constant")) {
 			value =  op.getOper();
 		} else if(op.getOperandClass().equals("direct")) {
@@ -174,7 +205,6 @@ public class ALUCU {
 		} else if(op.getOperandClass().equals("indirect")) {
 			value =  indirectAccesRegister(op.getOper()).getData();
 		}
-		System.out.println("Valor dado: " + value);
 		
 		return value;
 	}
@@ -183,7 +213,6 @@ public class ALUCU {
 	public Register<Integer> resolveOperandReg(Operand op) {
 		Register<Integer> aux = new Register<Integer>(null, null);
 		if(op.getOperandClass().equals("direct")) {
-			System.out.println("directo");
 			aux =  directAccesRegister(op.getOper());
 		} else if(op.getOperandClass().equals("indirect")) {
 			aux =  indirectAccesRegister(op.getOper());
@@ -192,7 +221,6 @@ public class ALUCU {
 	}
 	
 	public Register<Integer> directAccesRegister(int pos) {
-		System.out.println(dataMemoryAcces);
 		if(pos >= dataMemoryAcces.getMemory().size()) {
 			System.out.println("MAyor");
 			dataMemoryAcces.resize(pos);
@@ -202,12 +230,10 @@ public class ALUCU {
 	
 	public Register<Integer> indirectAccesRegister(int pos) {
 		if(pos >= dataMemoryAcces.getMemory().size()) {
-			System.out.println("MAyor");
 			dataMemoryAcces.resize(pos);
 		}
 		int regDirection =  dataMemoryAcces.getMemory().get(pos).getData();
 		if(regDirection >= dataMemoryAcces.getMemory().size()) {
-			System.out.println("MAyor");
 			dataMemoryAcces.resize(regDirection);
 			
 		}
@@ -215,7 +241,6 @@ public class ALUCU {
 	}
 	
 	public void load(Operand op) {
-		System.out.println("load: "+ op);
 		R0.setData(resolveOperand(op));
 	}
 	
@@ -232,7 +257,6 @@ public class ALUCU {
 	}
 	
 	public void mul(Operand op) {
-		System.out.println(R0.getData() +"X"+ resolveOperand(op));
 		R0.setData(R0.getData() * resolveOperand(op));
 	}
 	
@@ -242,11 +266,9 @@ public class ALUCU {
 	
 	public void read(Operand op) {
 		resolveOperandReg(op).setData(inputTapeAcces.get());
-		System.out.println("read operando :"+ resolveOperand(op));
 	}
 	
 	public void write(Operand op) {
-		System.out.println("write: " + resolveOperand(op));
 		outputTapeAcces.add(resolveOperand(op));
 	}
 	

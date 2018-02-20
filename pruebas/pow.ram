@@ -1,0 +1,48 @@
+# Programa que lee dos datos de la cinta de entrada y calcula  
+# X^y donde X es el primer dato e y el segundo caundo termina
+# graba el resultado en la cinta de salida
+
+
+# leemos la base de la cinta y lo ponemos en R1 y en R3
+					read 1
+					load 1
+					store 3
+					
+# leemos el exponente de la cinta en R2
+					read 2
+					
+# lo metemos en R0 					
+					load 2
+					
+# si es 0 saltamos a fin:
+					jzero fin	
+									
+
+
+# vamos a multiplicar base despues de restar 1
+				load 2
+				sub =1
+				store 2
+
+multiplicarBase: 	load 1
+					mul 3
+					store 3 
+					
+					
+# resta 1 al registro 2 (acumula y resta)					
+restar1:		load 2
+				sub =1
+				
+# si es 0 finalizamos				
+				jzero fin2
+				
+# si no lo guardamos en R2				
+				store 2  	
+				jump multiplicarBase		
+
+# escribimos 1 en la cinta de salida
+fin:	write =1
+			jump fin3			 	
+fin2:	write 3
+fin3:			halt
+  

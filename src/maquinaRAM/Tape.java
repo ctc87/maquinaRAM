@@ -25,6 +25,10 @@ public class Tape {
 		tape.add(value);
 	}
 	
+	public int size() {
+		return tape.size();
+	}
+	
 	public String toString() {
 		String str = "tape:";
 		for (int i = 0; i < tape.size(); i++) {

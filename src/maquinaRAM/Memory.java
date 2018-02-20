@@ -52,32 +52,25 @@ public class Memory<T> {
 		while(!found) {
 			found = memory.get(i).getRegisterlabel().equals(tag);
 			String str = memory.get(i).getRegisterlabel().isEmpty() ? "-Sin etiqueta-" : memory.get(i).getRegisterlabel();
-			System.out.println("Comparando " + str + " y " + tag );
 			if(!found)i++;
 		}
 		return i;
 	}
 	
 	public String toString() {
-		String str = "memory:------------------------\n ";
+		String str = "Memory:\n ";
 		for (int i = 0; i < memory.size(); i++) {
 			str += "R" + i + ": ";
 			str += memory.get(i).toString() + "\n ";
 		}
-		str += "------------------------------------------";
 		return str;
 	}
 
 
 	public void resize(int pos) {
-		System.out.println("resize: memoria tamaño deseado " + pos );
-		System.out.println("memoria tamaño actual " + getMemory().size() );
 		for (int i = getMemory().size() - 1; i <= pos; i++) {
-			System.out.println("valor de la i en el resize " + i);
 			getMemory().add(new Register<T>(null, ""));
 		}
-		System.out.println("memoria tamaño actual despues del resize " + getMemory().size() );
-		System.out.println(toString());
 		
 	}
 	

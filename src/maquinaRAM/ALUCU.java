@@ -9,24 +9,12 @@ import maquinaRAM.Instructions.Instruction;
 import maquinaRAM.operands.Operand;
 
 /**
- * <h1>ALUCU</h1> ALUCU 
+ * <h1>ALUCU</h1>  
  * 
  * @author Carlos Troyano Carmona
  * @version 1.0
  * @date 1 mar. 2017
  * @see System
- */
-/**
- * @author root
- *
- */
-/**
- * @author root
- *
- */
-/**
- * @author root
- *
  */
 public class ALUCU {
 

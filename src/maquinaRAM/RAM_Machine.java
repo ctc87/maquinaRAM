@@ -46,15 +46,15 @@ public class RAM_Machine {
 		files.put("output", args[2]);
 		RAM_Machine ramM;
 		boolean debug = args[3].equals("1");
-		
+		ramM = null;
 		try {
 			ramM = new RAM_Machine(files, debug);
-			ramM.writeInputTape();
 			ramM.alucu.execution();
 		} catch (SintaxError e) {
 			e.printStackTrace();
 		}
-		
+		if(ramM != null)
+			ramM.writeInputTape();
 		
 	}
 

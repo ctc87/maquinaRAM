@@ -1,5 +1,5 @@
-# Programa con una instrucciÃ³n ilegal (STORE =2)
-# Debe producir un error en la ejecuciÃ³n
+# Programa con una instrucción ilegal (STORE =2)
+# Debe producir un error en la ejecución
 
 	LOAD =3
 	STORE 1	

@@ -1,0 +1,50 @@
+# Calcular logaritmo 
+
+#int log(int b, int n ) {
+#    if (n <= b) {
+#            return 1;
+#    } else {
+#        return log(b, n/b)+1 ;
+#
+#   }
+#}
+
+# leemos la base de la cinta y la metemos en R0 y R3
+read 1
+load 1
+store 3
+
+# leemos n de R2 
+read 2
+
+
+		
+log: 	load 2
+		sub 3	
+		JGTZ noNegantivo
+		jump else
+		
+else:   load 3
+		div  2
+		store 3
+		
+		 		
+
+
+# en R0
+empezamosResta: load 2
+
+# hay que restart el registro que esta en 
+
+sub 3
+
+# comprobar si es mayor que 0
+
+
+
+
+
+
+noNegativo:  
+
+

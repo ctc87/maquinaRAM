@@ -51,7 +51,7 @@ public class Memory<T> {
 		int i = 0;
 		while(!found) {
 			found = memory.get(i).getRegisterlabel().equals(tag);
-			String str = memory.get(i).getRegisterlabel().isEmpty() ? "-Sin etiqueta-" : memory.get(i).getRegisterlabel();
+			//String str = memory.get(i).getRegisterlabel().isEmpty() ? "-Sin etiqueta-" : memory.get(i).getRegisterlabel();
 			if(!found)i++;
 		}
 		return i;

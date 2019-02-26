@@ -1,9 +1,2 @@
-# Assignment structure
+Dejo mi programa del logaritmo en pruebas aun que no me dio tiempo a terminarlo
 
-This directory is organised as follows:
-
-      .
-      ├── bib          # Assignment bibliography
-      ├── report       # LaTeX template for the report
-      ├── slides       # LaTeX Beamer template for the slides
-      ├── src          # Source code
